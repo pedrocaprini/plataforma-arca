@@ -1,24 +1,492 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma Arca</title>
+    <title>Programa ARCA - Animais Resgatados, Cuidados e Acolhidos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <script src="js/script.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>Eae</h1>
-    </header>
-    <nav>
 
-    </nav>
-    <main>
-        
-    </main> 
-    <footer>
+    <section id="tela-login" class="tela ativa">
+        <div class="login-card">
+            <header class="login-header">
+                <h1 class="logo">ARCA <span aria-hidden="true">🐾</span></h1>
+                <p class="subtitulo">Animais Resgatados, Cuidados e Acolhidos</p>
+            </header>
 
-    </footer>   
+            <form class="form-login" onsubmit="fazerLogin(event)">
+                <label for="sistema-web" class="label-escondido">SISTEMA WEB</label>
+                <input type="hidden" id="sistema-web" name="sistema-web" value="ARCA">
+
+                <label for="usuario">Usuário</label>
+                <input type="text" id="usuario" name="usuario" placeholder="Digite seu usuário" required autocomplete="username">
+
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required autocomplete="current-password">
+
+                <p id="msg-login" class="msg-erro" role="alert"></p>
+
+                <button type="submit" class="btn-primario">Entrar</button>
+
+                <details class="ajuda-login">
+                    <summary>Usuários de teste</summary>
+                    <ul>
+                        <li><strong>tutor</strong> / 123456</li>
+                        <li><strong>candidato</strong> / cand!098</li>
+                        <li><strong>Ong</strong> / ong$-135</li>
+                        <li><strong>prefeitura</strong> / pref@456</li>
+                    </ul>
+                </details>
+            </form>
+        </div>
+    </section>
+
+    <div id="app" class="app oculto">
+
+        <header class="topbar">
+            <button class="btn-icone" onclick="voltar()" aria-label="Voltar">←</button>
+            <h1 class="logo-topo">ARCA <span aria-hidden="true">🐾</span></h1>
+            <button class="btn-icone" onclick="abrirAjuda()" aria-label="Ajuda">?</button>
+        </header>
+
+        <main id="conteudo">
+
+            <section id="tela-home-tutor" class="tela">
+                <h2>Olá, Tutor</h2>
+                <p class="legenda">O que vamos fazer hoje pelos seus pets?</p>
+                <div class="grid-cards">
+                    <button class="card-menu" onclick="mostrarTela('tela-adocao')">
+                        <span class="card-icone">🐶</span>
+                        <span class="card-titulo">Adoção</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-agendamento')">
+                        <span class="card-icone">📅</span>
+                        <span class="card-titulo">Agendamento</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-clinica')">
+                        <span class="card-icone">🏥</span>
+                        <span class="card-titulo">Clínica</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-solicitacoes')">
+                        <span class="card-icone">📋</span>
+                        <span class="card-titulo">Solicitações</span>
+                    </button>
+                </div>
+                <section class="bloco-noticias">
+                    <h3>Notícias</h3>
+                    <article class="noticia">
+                        <h4>Campanha de castração gratuita</h4>
+                        <p>Inscrições abertas até 30/06 para residentes da Serra.</p>
+                    </article>
+                    <article class="noticia">
+                        <h4>Feira de adoção no shopping</h4>
+                        <p>Sábado, das 10h às 17h. Venha conhecer nossos amigos.</p>
+                    </article>
+                </section>
+            </section>
+
+            <section id="tela-home-candidato" class="tela">
+                <h2>Olá, futuro adotante</h2>
+                <p class="legenda">Encontre seu novo melhor amigo</p>
+                <div class="grid-cards">
+                    <button class="card-menu" onclick="mostrarTela('tela-adocao')">
+                        <span class="card-icone">🐾</span>
+                        <span class="card-titulo">Adotar</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-filtro')">
+                        <span class="card-icone">🔍</span>
+                        <span class="card-titulo">Filtrar</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-favoritos')">
+                        <span class="card-icone">🔖</span>
+                        <span class="card-titulo">Favoritos</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-fale-ong')">
+                        <span class="card-icone">💬</span>
+                        <span class="card-titulo">Falar com ONG</span>
+                    </button>
+                </div>
+            </section>
+
+            <section id="tela-home-ong" class="tela">
+                <h2>Painel da ONG</h2>
+                <p class="legenda">Gerencie animais e atendimentos</p>
+                <div class="grid-cards">
+                    <button class="card-menu destaque" onclick="mostrarTela('tela-crud-animais')">
+                        <span class="card-icone">➕</span>
+                        <span class="card-titulo">Cadastrar Animal</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-meus-animais')">
+                        <span class="card-icone">📚</span>
+                        <span class="card-titulo">Meus Animais</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-mensagens')">
+                        <span class="card-icone">✉️</span>
+                        <span class="card-titulo">Mensagens</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-voluntarios')">
+                        <span class="card-icone">🙋</span>
+                        <span class="card-titulo">Voluntários</span>
+                    </button>
+                </div>
+                <section class="resumo-ong">
+                    <h3>Resumo</h3>
+                    <ul class="estatisticas">
+                        <li><strong id="stat-total-animais">0</strong><span>Animais cadastrados</span></li>
+                        <li><strong>12</strong><span>Mensagens</span></li>
+                        <li><strong>8</strong><span>Voluntários</span></li>
+                    </ul>
+                </section>
+            </section>
+
+            <section id="tela-home-prefeitura" class="tela">
+                <h2>Painel da Prefeitura</h2>
+                <p class="legenda">Acompanhe denúncias, resgates e relatórios</p>
+                <div class="grid-cards">
+                    <button class="card-menu" onclick="mostrarTela('tela-denuncias')">
+                        <span class="card-icone">🚨</span>
+                        <span class="card-titulo">Denúncias</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-resgates')">
+                        <span class="card-icone">🚑</span>
+                        <span class="card-titulo">Resgates</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-relatorios')">
+                        <span class="card-icone">📊</span>
+                        <span class="card-titulo">Relatórios</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-campanhas')">
+                        <span class="card-icone">📣</span>
+                        <span class="card-titulo">Campanhas</span>
+                    </button>
+                </div>
+            </section>
+
+            <section id="tela-adocao" class="tela">
+                <h2>Animais para Adoção</h2>
+                <p class="legenda">Toque em um animal para ver mais</p>
+                <div id="grid-animais" class="grid-animais"></div>
+            </section>
+
+            <section id="tela-detalhe-animal" class="tela">
+                <article class="detalhe">
+                    <img id="detalhe-img" src="" alt="Foto do animal" class="detalhe-img">
+                    <div class="detalhe-acoes-topo">
+                        <button class="btn-icone" onclick="favoritarAtual()" aria-label="Favoritar">🔖</button>
+                        <button class="btn-icone" aria-label="Compartilhar">📤</button>
+                    </div>
+                    <h2 id="detalhe-nome">Nome</h2>
+                    <p id="detalhe-info" class="info-animal"></p>
+                    <p id="detalhe-descricao" class="descricao"></p>
+                    <button class="btn-primario" onclick="adotarAtual()">ADOTE!</button>
+                </article>
+            </section>
+
+            <section id="tela-favoritos" class="tela">
+                <h2>Favoritos</h2>
+                <p class="legenda">Animais que você marcou</p>
+                <div id="lista-favoritos" class="lista-favoritos"></div>
+            </section>
+
+            <section id="tela-filtro" class="tela">
+                <h2>Filtrar Animais</h2>
+                <form class="form-filtro" onsubmit="aplicarFiltro(event)">
+                    <label for="filtro-especie">Espécie</label>
+                    <select id="filtro-especie">
+                        <option value="">Todas</option>
+                        <option value="Cachorro">Cachorro</option>
+                        <option value="Gato">Gato</option>
+                    </select>
+
+                    <label for="filtro-porte">Porte</label>
+                    <select id="filtro-porte">
+                        <option value="">Todos</option>
+                        <option value="Pequeno">Pequeno</option>
+                        <option value="Médio">Médio</option>
+                        <option value="Grande">Grande</option>
+                    </select>
+
+                    <label for="filtro-sexo">Sexo</label>
+                    <select id="filtro-sexo">
+                        <option value="">Todos</option>
+                        <option value="Macho">Macho</option>
+                        <option value="Fêmea">Fêmea</option>
+                    </select>
+
+                    <label for="filtro-ambiente">Ambiente ideal</label>
+                    <select id="filtro-ambiente">
+                        <option value="">Qualquer</option>
+                        <option value="Apartamento">Apartamento</option>
+                        <option value="Casa">Casa</option>
+                    </select>
+
+                    <button type="submit" class="btn-primario">Ver resultados</button>
+                </form>
+            </section>
+
+            <section id="tela-agendamento" class="tela">
+                <h2>Agendamento</h2>
+                <div class="abas-agenda">
+                    <button class="aba ativa" onclick="alternarAba(this,'coleta')">Coleta de sangue</button>
+                    <button class="aba" onclick="alternarAba(this,'checkup')">Check-ups</button>
+                </div>
+                <article class="card-agenda">
+                    <div>
+                        <strong>24/05/2026 - 08:00</strong>
+                        <p>Coleta de Sangue · 20 vagas disponíveis</p>
+                    </div>
+                    <button class="btn-secundario" onclick="agendar('Coleta de Sangue')">Agendar</button>
+                </article>
+                <article class="card-agenda">
+                    <div>
+                        <strong>24/05/2026 - 14:00</strong>
+                        <p>Check-up Geral · 15 vagas disponíveis</p>
+                    </div>
+                    <button class="btn-secundario" onclick="agendar('Check-up Geral')">Agendar</button>
+                </article>
+                <article class="card-agenda">
+                    <div>
+                        <strong>26/05/2026 - 09:00</strong>
+                        <p>Castração · 10 vagas disponíveis</p>
+                    </div>
+                    <button class="btn-secundario" onclick="agendar('Castração')">Agendar</button>
+                </article>
+            </section>
+
+            <section id="tela-clinica" class="tela">
+                <h2>Clínica Veterinária</h2>
+                <p class="legenda">Serviços oferecidos pelo ARCA</p>
+                <ul class="lista-servicos">
+                    <li><span>💉</span> Vacinação anual</li>
+                    <li><span>✂️</span> Castração gratuita</li>
+                    <li><span>🩺</span> Consultas e check-ups</li>
+                    <li><span>🦷</span> Limpeza dental</li>
+                </ul>
+            </section>
+
+            <section id="tela-solicitacoes" class="tela">
+                <h2>Minhas Solicitações</h2>
+                <article class="card-solicitacao">
+                    <div>
+                        <strong>Resgate de animal</strong>
+                        <p>Protocolo #12345</p>
+                    </div>
+                    <span class="status status-analise">Em análise</span>
+                </article>
+                <article class="card-solicitacao">
+                    <div>
+                        <strong>Denúncia de maus-tratos</strong>
+                        <p>Protocolo #12344</p>
+                    </div>
+                    <span class="status status-andamento">Em andamento</span>
+                </article>
+                <article class="card-solicitacao">
+                    <div>
+                        <strong>Solicitação de castração</strong>
+                        <p>Protocolo #12343</p>
+                    </div>
+                    <span class="status status-concluida">Concluída</span>
+                </article>
+            </section>
+
+            <section id="tela-fale-ong" class="tela">
+                <h2>Fale com a ONG</h2>
+                <article class="cartao-ong">
+                    <h3>ONG Patinhas do Bem</h3>
+                    <p>Horário de atendimento: Seg a Sex, 8h às 17h</p>
+                    <button class="btn-primario">✉️ Enviar mensagem</button>
+                    <button class="btn-secundario">📞 Ligar</button>
+                </article>
+                <article class="cartao-ong">
+                    <h3>ONG Patas Felizes</h3>
+                    <p>Horário de atendimento: Ter a Sáb, 9h às 18h</p>
+                    <button class="btn-primario">✉️ Enviar mensagem</button>
+                    <button class="btn-secundario">📞 Ligar</button>
+                </article>
+            </section>
+
+            <section id="tela-crud-animais" class="tela">
+                <h2 id="titulo-form-animal">Cadastrar Animal</h2>
+                <form class="form-animal" onsubmit="salvarAnimal(event)">
+                    <input type="hidden" id="animal-id">
+
+                    <label for="animal-nome">Nome</label>
+                    <input type="text" id="animal-nome" required placeholder="Ex.: Mel">
+
+                    <label for="animal-especie">Espécie</label>
+                    <select id="animal-especie" required>
+                        <option value="">Selecione</option>
+                        <option value="Cachorro">Cachorro</option>
+                        <option value="Gato">Gato</option>
+                    </select>
+
+                    <label for="animal-idade">Idade (anos)</label>
+                    <input type="number" id="animal-idade" min="0" max="30" required>
+
+                    <label for="animal-sexo">Sexo</label>
+                    <select id="animal-sexo" required>
+                        <option value="">Selecione</option>
+                        <option value="Macho">Macho</option>
+                        <option value="Fêmea">Fêmea</option>
+                    </select>
+
+                    <label for="animal-porte">Porte</label>
+                    <select id="animal-porte" required>
+                        <option value="">Selecione</option>
+                        <option value="Pequeno">Pequeno</option>
+                        <option value="Médio">Médio</option>
+                        <option value="Grande">Grande</option>
+                    </select>
+
+                    <label for="animal-ambiente">Ambiente ideal</label>
+                    <select id="animal-ambiente" required>
+                        <option value="">Selecione</option>
+                        <option value="Apartamento">Apartamento</option>
+                        <option value="Casa">Casa</option>
+                    </select>
+
+                    <label for="animal-foto">URL da foto</label>
+                    <input type="url" id="animal-foto" placeholder="https://...">
+
+                    <label for="animal-descricao">Descrição</label>
+                    <textarea id="animal-descricao" rows="3" placeholder="Personalidade, cuidados..."></textarea>
+
+                    <div class="form-acoes">
+                        <button type="submit" class="btn-primario">Salvar</button>
+                        <button type="button" class="btn-secundario" onclick="limparForm()">Cancelar</button>
+                    </div>
+                </form>
+
+                <h3>Animais cadastrados</h3>
+                <div id="tabela-animais" class="tabela-animais"></div>
+            </section>
+
+            <section id="tela-meus-animais" class="tela">
+                <h2>Meus Animais</h2>
+                <div id="meus-animais-lista" class="grid-animais"></div>
+            </section>
+
+            <section id="tela-mensagens" class="tela">
+                <h2>Mensagens</h2>
+                <article class="card-mensagem">
+                    <h3>Mariana Silva</h3>
+                    <p>"Olá, vi a Mel e gostaria de saber se ela se adapta a apartamento..."</p>
+                    <span class="data">há 2h</span>
+                </article>
+                <article class="card-mensagem">
+                    <h3>Carlos Santos</h3>
+                    <p>"Tenho interesse em adotar o Max. Posso visitar no sábado?"</p>
+                    <span class="data">há 5h</span>
+                </article>
+            </section>
+
+            <section id="tela-voluntarios" class="tela">
+                <h2>Voluntários</h2>
+                <ul class="lista-voluntarios">
+                    <li><strong>Rafael Costa</strong> - Resgates · (27) 99999-0001</li>
+                    <li><strong>Patrícia Mendes</strong> - Lar temporário · (27) 99999-0002</li>
+                    <li><strong>João Lima</strong> - Transporte · (27) 99999-0003</li>
+                </ul>
+            </section>
+
+            <section id="tela-denuncias" class="tela">
+                <h2>Denúncias Recebidas</h2>
+                <article class="card-denuncia">
+                    <header>
+                        <strong>Protocolo #20051</strong>
+                        <span class="status status-andamento">Em andamento</span>
+                    </header>
+                    <p><strong>Local:</strong> Rua das Palmeiras, 120 - Carapina</p>
+                    <p>Cachorro acorrentado sem água nem comida.</p>
+                </article>
+                <article class="card-denuncia">
+                    <header>
+                        <strong>Protocolo #20050</strong>
+                        <span class="status status-analise">Em análise</span>
+                    </header>
+                    <p><strong>Local:</strong> Av. Central, 45 - Serra Sede</p>
+                    <p>Gato ferido próximo ao supermercado.</p>
+                </article>
+            </section>
+
+            <section id="tela-resgates" class="tela">
+                <h2>Solicitações de Resgate</h2>
+                <article class="card-denuncia">
+                    <header>
+                        <strong>Protocolo #30012</strong>
+                        <span class="status status-andamento">Equipe a caminho</span>
+                    </header>
+                    <p><strong>Local:</strong> BR-101, km 287</p>
+                    <p>Cachorro atropelado, ainda vivo.</p>
+                </article>
+                <article class="card-denuncia">
+                    <header>
+                        <strong>Protocolo #30011</strong>
+                        <span class="status status-concluida">Concluído</span>
+                    </header>
+                    <p><strong>Local:</strong> Praia de Jacaraípe</p>
+                    <p>Filhote abandonado - resgatado e levado para abrigo.</p>
+                </article>
+            </section>
+
+            <section id="tela-relatorios" class="tela">
+                <h2>Relatórios</h2>
+                <ul class="estatisticas amplas">
+                    <li><strong>1.240</strong><span>Adoções em 2026</span></li>
+                    <li><strong>580</strong><span>Castrações</span></li>
+                    <li><strong>320</strong><span>Resgates atendidos</span></li>
+                    <li><strong>96%</strong><span>Denúncias respondidas</span></li>
+                </ul>
+            </section>
+
+            <section id="tela-campanhas" class="tela">
+                <h2>Campanhas</h2>
+                <article class="noticia">
+                    <h4>Adote um amigo - Junho 2026</h4>
+                    <p>Feira de adoção todos os sábados no Parque da Cidade.</p>
+                </article>
+                <article class="noticia">
+                    <h4>Castração itinerante</h4>
+                    <p>Bairros atendidos em junho: Jacaraípe, Carapina, Serra Sede.</p>
+                </article>
+            </section>
+
+        </main>
+
+        <nav class="bottom-nav" aria-label="Navegação inferior">
+            <button class="nav-item ativo" onclick="irHome()" aria-label="Início">
+                <span aria-hidden="true">🏠</span><small>Início</small>
+            </button>
+            <button class="nav-item" onclick="mostrarTela('tela-favoritos')" aria-label="Favoritos">
+                <span aria-hidden="true">🔖</span><small>Favoritos</small>
+            </button>
+            <button class="nav-item" onclick="mostrarTela('tela-perfil')" aria-label="Perfil">
+                <span aria-hidden="true">👤</span><small>Perfil</small>
+            </button>
+            <button class="nav-item" onclick="mostrarTela('tela-solicitacoes')" aria-label="Solicitações">
+                <span aria-hidden="true">📋</span><small>Solicit.</small>
+            </button>
+            <button class="nav-item" onclick="sair()" aria-label="Sair">
+                <span aria-hidden="true">🚪</span><small>Sair</small>
+            </button>
+        </nav>
+
+        <section id="tela-perfil" class="tela">
+            <h2>Meu Perfil</h2>
+            <article class="cartao-perfil">
+                <div class="avatar">👤</div>
+                <p><strong>Usuário:</strong> <span id="perfil-usuario">-</span></p>
+                <p><strong>Perfil:</strong> <span id="perfil-tipo">-</span></p>
+                <button class="btn-secundario" onclick="sair()">Sair da conta</button>
+            </article>
+        </section>
+
+    </div>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
