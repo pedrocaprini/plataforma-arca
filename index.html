@@ -32,15 +32,52 @@
 
                 <button type="submit" class="btn-primario">Entrar</button>
 
-                <details class="ajuda-login">
-                    <summary>Usuários de teste</summary>
-                    <ul>
-                        <li><strong>tutor</strong> / 123456</li>
-                        <li><strong>candidato</strong> / cand!098</li>
-                        <li><strong>Ong</strong> / ong$-135</li>
-                        <li><strong>prefeitura</strong> / pref@456</li>
-                    </ul>
-                </details>
+                <div class="divisor"><span>ou</span></div>
+
+                <button type="button" class="btn-secundario btn-anonimo" onclick="entrarAnonimo()">
+                    <span aria-hidden="true">🕶️</span> Entrar de forma anônima
+                </button>
+
+                <p class="texto-cadastro">
+                    Ainda não tem conta?
+                    <a href="#" onclick="abrirCadastro(event)">Criar conta</a>
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <section id="tela-cadastro" class="tela">
+        <div class="login-card">
+            <header class="login-header">
+                <h1 class="logo">ARCA <span aria-hidden="true">🐾</span></h1>
+                <p class="subtitulo">Crie sua conta</p>
+            </header>
+
+            <form class="form-login" onsubmit="criarConta(event)">
+                <label for="cad-nome">Nome completo</label>
+                <input type="text" id="cad-nome" placeholder="Digite seu nome" required>
+
+                <label for="cad-email">E-mail</label>
+                <input type="email" id="cad-email" placeholder="seu@email.com" required>
+
+                <label for="cad-usuario">Usuário</label>
+                <input type="text" id="cad-usuario" placeholder="Escolha um nome de usuário" required>
+
+                <label for="cad-senha">Senha</label>
+                <input type="password" id="cad-senha" placeholder="Crie uma senha" required minlength="6">
+
+                <label for="cad-perfil">Tipo de perfil</label>
+                <select id="cad-perfil" required>
+                    <option value="">Selecione</option>
+                    <option value="tutor">Tutor de animal</option>
+                    <option value="candidato">Candidato a adotante</option>
+                    <option value="ong">ONG</option>
+                </select>
+
+                <p id="msg-cadastro" class="msg-erro" role="alert"></p>
+
+                <button type="submit" class="btn-primario">Criar conta</button>
+                <button type="button" class="btn-secundario" onclick="voltarLogin()">Voltar ao login</button>
             </form>
         </div>
     </section>
@@ -48,9 +85,9 @@
     <div id="app" class="app oculto">
 
         <header class="topbar">
-            <button class="btn-icone" onclick="voltar()" aria-label="Voltar">←</button>
-            <h1 class="logo-topo">ARCA <span aria-hidden="true">🐾</span></h1>
-            <button class="btn-icone" onclick="abrirAjuda()" aria-label="Ajuda">?</button>
+            <button class="btn-icone" onclick="voltar()" aria-label="Voltar" data-tour="voltar">←</button>
+            <h1 class="logo-topo" data-tour="logo">ARCA <span aria-hidden="true">🐾</span></h1>
+            <button class="btn-icone" onclick="iniciarTour()" aria-label="Ajuda" data-tour="ajuda">?</button>
         </header>
 
         <main id="conteudo">
@@ -58,12 +95,12 @@
             <section id="tela-home-tutor" class="tela">
                 <h2>Olá, Tutor</h2>
                 <p class="legenda">O que vamos fazer hoje pelos seus pets?</p>
-                <div class="grid-cards">
-                    <button class="card-menu" onclick="mostrarTela('tela-adocao')">
+                <div class="grid-cards" data-tour="menu-tutor">
+                    <button class="card-menu" onclick="mostrarTela('tela-adocao')" data-tour="card-adocao">
                         <span class="card-icone">🐶</span>
                         <span class="card-titulo">Adoção</span>
                     </button>
-                    <button class="card-menu" onclick="mostrarTela('tela-agendamento')">
+                    <button class="card-menu" onclick="mostrarTela('tela-agendamento')" data-tour="card-agendamento">
                         <span class="card-icone">📅</span>
                         <span class="card-titulo">Agendamento</span>
                     </button>
@@ -92,8 +129,8 @@
             <section id="tela-home-candidato" class="tela">
                 <h2>Olá, futuro adotante</h2>
                 <p class="legenda">Encontre seu novo melhor amigo</p>
-                <div class="grid-cards">
-                    <button class="card-menu" onclick="mostrarTela('tela-adocao')">
+                <div class="grid-cards" data-tour="menu-candidato">
+                    <button class="card-menu" onclick="mostrarTela('tela-adocao')" data-tour="card-adotar">
                         <span class="card-icone">🐾</span>
                         <span class="card-titulo">Adotar</span>
                     </button>
@@ -115,8 +152,8 @@
             <section id="tela-home-ong" class="tela">
                 <h2>Painel da ONG</h2>
                 <p class="legenda">Gerencie animais e atendimentos</p>
-                <div class="grid-cards">
-                    <button class="card-menu destaque" onclick="mostrarTela('tela-crud-animais')">
+                <div class="grid-cards" data-tour="menu-ong">
+                    <button class="card-menu destaque" onclick="mostrarTela('tela-crud-animais')" data-tour="card-cadastrar">
                         <span class="card-icone">➕</span>
                         <span class="card-titulo">Cadastrar Animal</span>
                     </button>
@@ -143,11 +180,91 @@
                 </section>
             </section>
 
+            <section id="tela-home-anonimo" class="tela">
+                <h2>Bem-vindo(a) ao ARCA</h2>
+                <p class="legenda">Você está navegando como visitante anônimo. É possível registrar denúncias de maus-tratos ou pedidos de resgate sem se identificar.</p>
+                <div class="grid-cards">
+                    <button class="card-menu destaque" onclick="mostrarTela('tela-denuncia-anonima')">
+                        <span class="card-icone">🚨</span>
+                        <span class="card-titulo">Denúncia anônima</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-resgate-anonimo')">
+                        <span class="card-icone">🚑</span>
+                        <span class="card-titulo">Pedir resgate</span>
+                    </button>
+                    <button class="card-menu" onclick="mostrarTela('tela-adocao')">
+                        <span class="card-icone">🐶</span>
+                        <span class="card-titulo">Ver animais</span>
+                    </button>
+                    <button class="card-menu" onclick="sair()">
+                        <span class="card-icone">🔐</span>
+                        <span class="card-titulo">Criar conta</span>
+                    </button>
+                </div>
+                <section class="bloco-noticias">
+                    <h3>Por que criar uma conta?</h3>
+                    <article class="noticia">
+                        <h4>Acompanhe suas solicitações</h4>
+                        <p>Com uma conta você consegue acompanhar o andamento das suas denúncias e pedidos.</p>
+                    </article>
+                    <article class="noticia">
+                        <h4>Adote ou cadastre animais</h4>
+                        <p>Crie uma conta para favoritar animais, adotar ou cadastrar pets da sua ONG.</p>
+                    </article>
+                </section>
+            </section>
+
+            <section id="tela-denuncia-anonima" class="tela">
+                <h2>Denúncia Anônima</h2>
+                <p class="legenda">Seus dados pessoais não serão solicitados nem registrados.</p>
+                <form class="form-animal" onsubmit="enviarDenunciaAnonima(event)">
+                    <label for="den-tipo">Tipo de ocorrência</label>
+                    <select id="den-tipo" required>
+                        <option value="">Selecione</option>
+                        <option value="Maus-tratos">Maus-tratos</option>
+                        <option value="Abandono">Abandono</option>
+                        <option value="Animal ferido">Animal ferido</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+
+                    <label for="den-local">Local da ocorrência</label>
+                    <input type="text" id="den-local" required placeholder="Rua, número, bairro, cidade">
+
+                    <label for="den-descricao">Descrição do que você viu</label>
+                    <textarea id="den-descricao" rows="4" required placeholder="Descreva a situação com o máximo de detalhes possível..."></textarea>
+
+                    <div class="form-acoes">
+                        <button type="submit" class="btn-primario">Enviar denúncia</button>
+                        <button type="button" class="btn-secundario" onclick="voltar()">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
+            <section id="tela-resgate-anonimo" class="tela">
+                <h2>Pedido de Resgate</h2>
+                <p class="legenda">Informe os dados do animal para que a equipe seja acionada.</p>
+                <form class="form-animal" onsubmit="enviarResgateAnonimo(event)">
+                    <label for="res-local">Local exato</label>
+                    <input type="text" id="res-local" required placeholder="Rua, número, referências...">
+
+                    <label for="res-animal">Tipo de animal</label>
+                    <input type="text" id="res-animal" required placeholder="Ex.: cachorro de porte médio, marrom">
+
+                    <label for="res-situacao">Situação do animal</label>
+                    <textarea id="res-situacao" rows="4" required placeholder="Descreva o estado e o ambiente onde o animal se encontra..."></textarea>
+
+                    <div class="form-acoes">
+                        <button type="submit" class="btn-primario">Solicitar resgate</button>
+                        <button type="button" class="btn-secundario" onclick="voltar()">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
             <section id="tela-home-prefeitura" class="tela">
                 <h2>Painel da Prefeitura</h2>
                 <p class="legenda">Acompanhe denúncias, resgates e relatórios</p>
-                <div class="grid-cards">
-                    <button class="card-menu" onclick="mostrarTela('tela-denuncias')">
+                <div class="grid-cards" data-tour="menu-prefeitura">
+                    <button class="card-menu" onclick="mostrarTela('tela-denuncias')" data-tour="card-denuncias">
                         <span class="card-icone">🚨</span>
                         <span class="card-titulo">Denúncias</span>
                     </button>
@@ -457,20 +574,20 @@
 
         </main>
 
-        <nav class="bottom-nav" aria-label="Navegação inferior">
-            <button class="nav-item ativo" onclick="irHome()" aria-label="Início">
+        <nav class="bottom-nav" aria-label="Navegação inferior" data-tour="bottom-nav">
+            <button class="nav-item ativo" onclick="irHome()" aria-label="Início" data-tour="nav-inicio">
                 <span aria-hidden="true">🏠</span><small>Início</small>
             </button>
-            <button class="nav-item" onclick="mostrarTela('tela-favoritos')" aria-label="Favoritos">
+            <button class="nav-item" onclick="mostrarTela('tela-favoritos')" aria-label="Favoritos" data-tour="nav-favoritos">
                 <span aria-hidden="true">🔖</span><small>Favoritos</small>
             </button>
-            <button class="nav-item" onclick="mostrarTela('tela-perfil')" aria-label="Perfil">
+            <button class="nav-item" onclick="mostrarTela('tela-perfil')" aria-label="Perfil" data-tour="nav-perfil">
                 <span aria-hidden="true">👤</span><small>Perfil</small>
             </button>
-            <button class="nav-item" onclick="mostrarTela('tela-solicitacoes')" aria-label="Solicitações">
+            <button class="nav-item" onclick="mostrarTela('tela-solicitacoes')" aria-label="Solicitações" data-tour="nav-solicit">
                 <span aria-hidden="true">📋</span><small>Solicit.</small>
             </button>
-            <button class="nav-item" onclick="sair()" aria-label="Sair">
+            <button class="nav-item" onclick="sair()" aria-label="Sair" data-tour="nav-sair">
                 <span aria-hidden="true">🚪</span><small>Sair</small>
             </button>
         </nav>
@@ -485,6 +602,22 @@
             </article>
         </section>
 
+    </div>
+
+    <div id="tour-overlay" class="tour-overlay oculto" aria-hidden="true">
+        <div id="tour-spotlight" class="tour-spotlight"></div>
+        <div id="tour-tooltip" class="tour-tooltip" role="dialog" aria-labelledby="tour-titulo">
+            <h3 id="tour-titulo">Título</h3>
+            <p id="tour-texto">Conteúdo</p>
+            <div class="tour-rodape">
+                <span id="tour-progresso">1 / 1</span>
+                <div class="tour-botoes">
+                    <button class="btn-secundario" onclick="encerrarTour()">Pular</button>
+                    <button class="btn-secundario" id="tour-anterior" onclick="tourAnterior()">Anterior</button>
+                    <button class="btn-primario" id="tour-proximo" onclick="tourProximo()">Próximo</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/script.js"></script>

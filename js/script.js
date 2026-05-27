@@ -9,7 +9,8 @@ const PERMISSOES = {
     tutor: ["tela-home-tutor", "tela-adocao", "tela-detalhe-animal", "tela-favoritos", "tela-agendamento", "tela-clinica", "tela-solicitacoes", "tela-perfil"],
     candidato: ["tela-home-candidato", "tela-adocao", "tela-detalhe-animal", "tela-favoritos", "tela-filtro", "tela-fale-ong", "tela-solicitacoes", "tela-perfil"],
     ong: ["tela-home-ong", "tela-crud-animais", "tela-meus-animais", "tela-mensagens", "tela-voluntarios", "tela-favoritos", "tela-solicitacoes", "tela-perfil"],
-    prefeitura: ["tela-home-prefeitura", "tela-denuncias", "tela-resgates", "tela-relatorios", "tela-campanhas", "tela-solicitacoes", "tela-perfil"]
+    prefeitura: ["tela-home-prefeitura", "tela-denuncias", "tela-resgates", "tela-relatorios", "tela-campanhas", "tela-solicitacoes", "tela-perfil"],
+    anonimo: ["tela-home-anonimo", "tela-denuncia-anonima", "tela-resgate-anonimo", "tela-adocao", "tela-detalhe-animal"]
 };
 
 const ANIMAIS_INICIAIS = [
@@ -71,12 +72,92 @@ function sair() {
     estado.historico = [];
 
     document.getElementById("app").classList.add("oculto");
+    document.getElementById("tela-cadastro").classList.remove("ativa");
+    document.getElementById("tela-cadastro").style.display = "none";
     document.getElementById("tela-login").style.display = "flex";
     document.getElementById("tela-login").classList.add("ativa");
 
     document.getElementById("usuario").value = "";
     document.getElementById("senha").value = "";
     document.getElementById("msg-login").textContent = "";
+}
+
+function entrarAnonimo() {
+    estado.usuarioLogado = "anonimo";
+    estado.perfilAtual = "anonimo";
+    estado.historico = [];
+
+    document.getElementById("tela-login").classList.remove("ativa");
+    document.getElementById("tela-login").style.display = "none";
+    document.getElementById("app").classList.remove("oculto");
+
+    document.getElementById("perfil-usuario").textContent = "Visitante anônimo";
+    document.getElementById("perfil-tipo").textContent = "Anônimo";
+
+    mostrarTela("tela-home-anonimo");
+}
+
+function abrirCadastro(evento) {
+    if (evento) evento.preventDefault();
+    document.getElementById("tela-login").classList.remove("ativa");
+    document.getElementById("tela-login").style.display = "none";
+    document.getElementById("tela-cadastro").style.display = "flex";
+    document.getElementById("tela-cadastro").classList.add("ativa");
+}
+
+function voltarLogin() {
+    document.getElementById("tela-cadastro").classList.remove("ativa");
+    document.getElementById("tela-cadastro").style.display = "none";
+    document.getElementById("tela-login").style.display = "flex";
+    document.getElementById("tela-login").classList.add("ativa");
+    document.getElementById("msg-cadastro").textContent = "";
+}
+
+function criarConta(evento) {
+    evento.preventDefault();
+    const nome = document.getElementById("cad-nome").value.trim();
+    const email = document.getElementById("cad-email").value.trim();
+    const usuario = document.getElementById("cad-usuario").value.trim();
+    const senha = document.getElementById("cad-senha").value;
+    const perfil = document.getElementById("cad-perfil").value;
+    const msg = document.getElementById("msg-cadastro");
+
+    if (USUARIOS[usuario]) {
+        msg.textContent = "Esse nome de usuário já existe.";
+        return;
+    }
+
+    const homes = { tutor: "tela-home-tutor", candidato: "tela-home-candidato", ong: "tela-home-ong" };
+    const nomes = { tutor: "Tutor", candidato: "Candidato a adotante", ong: "ONG" };
+
+    USUARIOS[usuario] = { senha: senha, perfil: perfil, home: homes[perfil], nome: nomes[perfil] };
+
+    msg.style.color = "#2E8C7A";
+    msg.textContent = "Conta criada com sucesso! Fazendo login...";
+
+    setTimeout(function () {
+        msg.style.color = "";
+        msg.textContent = "";
+        voltarLogin();
+        document.getElementById("usuario").value = usuario;
+        document.getElementById("senha").value = senha;
+    }, 900);
+}
+
+function enviarDenunciaAnonima(evento) {
+    evento.preventDefault();
+    const protocolo = Math.floor(20000 + Math.random() * 9000);
+    alert("Denúncia anônima registrada com sucesso!\nProtocolo: #" + protocolo + "\n\nA prefeitura irá analisar e tomar as devidas providências.");
+    document.querySelector("#tela-denuncia-anonima form").reset();
+    mostrarTela("tela-home-anonimo");
+}
+
+function enviarResgateAnonimo(evento) {
+    evento.preventDefault();
+    const protocolo = Math.floor(30000 + Math.random() * 9000);
+    alert("Pedido de resgate registrado!\nProtocolo: #" + protocolo + "\n\nA equipe de resgate será acionada o quanto antes.");
+    document.querySelector("#tela-resgate-anonimo form").reset();
+    mostrarTela("tela-home-anonimo");
 }
 
 function mostrarTela(idTela, semHistorico) {
@@ -125,9 +206,141 @@ function irHome() {
     mostrarTela(dados.home, true);
 }
 
-function abrirAjuda() {
-    alert("Central de ajuda do Programa ARCA. Para suporte, ligue para (27) 3252-9000 ou envie um e-mail para arca@serra.es.gov.br.");
+const PASSOS_TOUR = {
+    tutor: [
+        { seletor: '[data-tour="logo"]', titulo: "Bem-vindo(a) ao ARCA!", texto: "Este é o cabeçalho do app. Sempre que ficar perdido(a), volte ao topo da tela." },
+        { seletor: '[data-tour="voltar"]', titulo: "Botão voltar", texto: "Use este botão para retornar à tela anterior a qualquer momento." },
+        { seletor: '[data-tour="ajuda"]', titulo: "Botão de ajuda", texto: "Clique no '?' sempre que quiser refazer este tour guiado." },
+        { seletor: '[data-tour="card-adocao"]', titulo: "1 - Adoção", texto: "Clique aqui para conhecer animais disponíveis para adoção.", telaAlvo: "tela-home-tutor" },
+        { seletor: '[data-tour="card-agendamento"]', titulo: "2 - Agendamento", texto: "Aqui você agenda serviços como castração, vacinação e check-up.", telaAlvo: "tela-home-tutor" },
+        { seletor: '[data-tour="nav-favoritos"]', titulo: "3 - Favoritos", texto: "Animais que você marcar com o marcador ficam guardados aqui." },
+        { seletor: '[data-tour="nav-solicit"]', titulo: "4 - Solicitações", texto: "Acompanhe o andamento das suas denúncias, adoções e agendamentos." },
+        { seletor: '[data-tour="nav-perfil"]', titulo: "5 - Meu Perfil", texto: "Veja e gerencie seus dados de conta." },
+        { seletor: '[data-tour="nav-sair"]', titulo: "6 - Sair", texto: "Quando terminar de usar, clique aqui para sair com segurança." }
+    ],
+    candidato: [
+        { seletor: '[data-tour="logo"]', titulo: "Olá, futuro adotante!", texto: "Vamos te mostrar como encontrar seu novo melhor amigo." },
+        { seletor: '[data-tour="card-adotar"]', titulo: "1 - Adotar", texto: "Clique aqui para ver todos os animais disponíveis para adoção.", telaAlvo: "tela-home-candidato" },
+        { seletor: '[data-tour="nav-favoritos"]', titulo: "2 - Favoritos", texto: "Marque animais que você gostou para não perdê-los de vista." },
+        { seletor: '[data-tour="nav-solicit"]', titulo: "3 - Solicitações", texto: "Veja o status dos seus pedidos de adoção." },
+        { seletor: '[data-tour="ajuda"]', titulo: "Precisa de ajuda?", texto: "Clique no '?' a qualquer momento para refazer esse passo a passo." }
+    ],
+    ong: [
+        { seletor: '[data-tour="logo"]', titulo: "Painel da ONG", texto: "Aqui você gerencia os animais e o relacionamento com candidatos." },
+        { seletor: '[data-tour="card-cadastrar"]', titulo: "1 - Cadastrar Animal", texto: "Clique para adicionar, editar ou excluir os animais da sua ONG.", telaAlvo: "tela-home-ong" },
+        { seletor: '[data-tour="nav-favoritos"]', titulo: "2 - Acompanhar interesse", texto: "Veja quais animais estão sendo favoritados pelos visitantes." },
+        { seletor: '[data-tour="nav-perfil"]', titulo: "3 - Perfil da ONG", texto: "Mantenha os dados da sua ONG atualizados." },
+        { seletor: '[data-tour="ajuda"]', titulo: "Refazer o tour", texto: "Clique no '?' sempre que precisar rever as funções." }
+    ],
+    prefeitura: [
+        { seletor: '[data-tour="logo"]', titulo: "Painel da Prefeitura", texto: "Acompanhe denúncias, resgates e relatórios da região." },
+        { seletor: '[data-tour="card-denuncias"]', titulo: "1 - Denúncias", texto: "Clique aqui para visualizar e atender denúncias da população.", telaAlvo: "tela-home-prefeitura" },
+        { seletor: '[data-tour="nav-solicit"]', titulo: "2 - Solicitações", texto: "Veja o histórico de todas as solicitações atendidas." },
+        { seletor: '[data-tour="ajuda"]', titulo: "Refazer o tour", texto: "Use o '?' a qualquer momento para rever este passo a passo." }
+    ],
+    anonimo: [
+        { seletor: '[data-tour="logo"]', titulo: "Você está anônimo", texto: "Você pode registrar denúncias e pedidos de resgate sem se identificar." },
+        { seletor: '.card-menu.destaque', titulo: "1 - Denúncia anônima", texto: "Clique aqui para registrar uma denúncia de maus-tratos ou abandono.", telaAlvo: "tela-home-anonimo" },
+        { seletor: '[data-tour="ajuda"]', titulo: "Precisa de ajuda?", texto: "Clique no '?' a qualquer momento para rever este tour." }
+    ]
+};
+
+let tourEstado = { passos: [], indice: 0, ativo: false };
+
+function iniciarTour() {
+    const passos = PASSOS_TOUR[estado.perfilAtual];
+    if (!passos || passos.length === 0) {
+        alert("Tour não disponível para este perfil.");
+        return;
+    }
+    tourEstado.passos = passos;
+    tourEstado.indice = 0;
+    tourEstado.ativo = true;
+    document.getElementById("tour-overlay").classList.remove("oculto");
+    mostrarPassoTour();
 }
+
+function mostrarPassoTour() {
+    const passo = tourEstado.passos[tourEstado.indice];
+    if (!passo) {
+        encerrarTour();
+        return;
+    }
+
+    if (passo.telaAlvo && estado.telaAtual !== passo.telaAlvo) {
+        mostrarTela(passo.telaAlvo, true);
+    }
+
+    setTimeout(function () {
+        const alvo = document.querySelector(passo.seletor);
+        const spotlight = document.getElementById("tour-spotlight");
+        const tooltip = document.getElementById("tour-tooltip");
+
+        document.getElementById("tour-titulo").textContent = passo.titulo;
+        document.getElementById("tour-texto").textContent = passo.texto;
+        document.getElementById("tour-progresso").textContent = (tourEstado.indice + 1) + " / " + tourEstado.passos.length;
+
+        document.getElementById("tour-anterior").style.visibility = tourEstado.indice === 0 ? "hidden" : "visible";
+        document.getElementById("tour-proximo").textContent = tourEstado.indice === tourEstado.passos.length - 1 ? "Concluir" : "Próximo";
+
+        if (!alvo) {
+            spotlight.style.display = "none";
+            tooltip.style.top = "50%";
+            tooltip.style.left = "50%";
+            tooltip.style.transform = "translate(-50%, -50%)";
+            return;
+        }
+
+        const rect = alvo.getBoundingClientRect();
+        spotlight.style.display = "block";
+        spotlight.style.top = (rect.top - 6) + "px";
+        spotlight.style.left = (rect.left - 6) + "px";
+        spotlight.style.width = (rect.width + 12) + "px";
+        spotlight.style.height = (rect.height + 12) + "px";
+
+        const tooltipAltura = 200;
+        const tooltipLargura = 320;
+        let top = rect.bottom + 14;
+        let left = rect.left + (rect.width / 2) - (tooltipLargura / 2);
+
+        if (top + tooltipAltura > window.innerHeight) {
+            top = rect.top - tooltipAltura - 14;
+        }
+        if (top < 10) top = 10;
+        if (left < 10) left = 10;
+        if (left + tooltipLargura > window.innerWidth - 10) {
+            left = window.innerWidth - tooltipLargura - 10;
+        }
+
+        tooltip.style.top = top + "px";
+        tooltip.style.left = left + "px";
+        tooltip.style.transform = "none";
+    }, 80);
+}
+
+function tourProximo() {
+    if (tourEstado.indice >= tourEstado.passos.length - 1) {
+        encerrarTour();
+        return;
+    }
+    tourEstado.indice++;
+    mostrarPassoTour();
+}
+
+function tourAnterior() {
+    if (tourEstado.indice === 0) return;
+    tourEstado.indice--;
+    mostrarPassoTour();
+}
+
+function encerrarTour() {
+    tourEstado.ativo = false;
+    document.getElementById("tour-overlay").classList.add("oculto");
+}
+
+window.addEventListener("resize", function () {
+    if (tourEstado.ativo) mostrarPassoTour();
+});
 
 function renderizarAnimais(idContainer, lista) {
     const cont = document.getElementById(idContainer);

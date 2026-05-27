@@ -114,13 +114,20 @@ label {
     display: none !important;
 }
 
-#tela-login {
+#tela-login, #tela-cadastro {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     padding: 1.5rem;
     background: linear-gradient(160deg, var(--verde-claro), var(--verde-medio) 60%, var(--teal));
+}
+
+#tela-cadastro {
+    display: none;
+}
+#tela-cadastro.ativa {
+    display: flex;
 }
 
 .login-card {
@@ -818,5 +825,117 @@ label {
     }
     .tela {
         padding: 1.6rem 2rem 6rem;
+    }
+}
+
+.divisor {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.2rem 0 0.8rem;
+    color: #888;
+    font-size: 0.9rem;
+}
+.divisor::before, .divisor::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--cinza-leve);
+}
+.divisor span {
+    padding: 0 0.7rem;
+}
+
+.btn-anonimo {
+    width: 100%;
+    margin-bottom: 0.8rem;
+}
+
+.texto-cadastro {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--cinza-texto);
+}
+.texto-cadastro a {
+    color: var(--teal-escuro);
+    font-weight: 700;
+    text-decoration: none;
+}
+.texto-cadastro a:hover {
+    text-decoration: underline;
+}
+
+.tour-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: auto;
+}
+.tour-overlay.oculto {
+    display: none;
+}
+.tour-overlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(75, 59, 89, 0.55);
+    backdrop-filter: blur(2px);
+}
+.tour-spotlight {
+    position: absolute;
+    border-radius: 14px;
+    box-shadow: 0 0 0 9999px rgba(75, 59, 89, 0.55), 0 0 0 4px var(--teal);
+    transition: all 0.35s ease;
+    pointer-events: none;
+}
+.tour-tooltip {
+    position: absolute;
+    background: var(--branco);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra-forte);
+    padding: 1.2rem 1.2rem 1rem;
+    max-width: 320px;
+    width: calc(100% - 2rem);
+    transition: top 0.35s ease, left 0.35s ease;
+}
+.tour-tooltip h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1.15rem;
+    color: var(--roxo-escuro);
+}
+.tour-tooltip p {
+    font-size: 0.95rem;
+    margin-bottom: 0.9rem;
+    color: var(--cinza-texto);
+}
+.tour-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+.tour-rodape #tour-progresso {
+    font-size: 0.85rem;
+    color: #888;
+    font-weight: 700;
+}
+.tour-botoes {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+.tour-botoes button {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.9rem;
+    border-radius: var(--raio);
+}
+
+@media (max-width: 480px) {
+    .tour-tooltip {
+        max-width: calc(100vw - 1.6rem);
+        left: 0.8rem !important;
+        right: 0.8rem;
     }
 }
